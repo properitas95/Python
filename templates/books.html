@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>방명록</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+        <div class="container">
+            <div class="panel panel-default">
+                <div id="messages" class="panel-body">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-10">
+                    <input type="text" name="message" class="form-control" id="message">
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" id="send" class="btn btn-info"  class="form-control">메시지</button>
+                </div>
+            </div>
+            <div class="row">
+                <h3>방명록 남기기</h3>
+                <a href="/" class='btn-primary btn-sm'>홈으로</a>
+                <a href="/logout" class='text-right'>로그아웃</a>
+            </div>
+            <hr/>
+            <form class="form-horizontal" action='/guest' method='post'>
+                    <div class="form-group">
+                        <input type="text" name="guest_name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="contents" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="form-control btn btn-primary">남기기</button>
+                    </div>
+            </form>
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <th>#</th>
+                    <th>이름</th>
+                    <th>내용</th>
+                </tr>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td>{{ book.guest_name }}</td>
+                        <td>{{ book.contents }}&nbsp;
+                        <a href="#" class="btn btn-link like-button" data-id="{{ book.id }}">
+                            <i class="fa fa-thumbs-o-up"></i>
+                            <span id="like-count-{{ book.id }}">{{ book.likes }}</span>
+                        </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    <script>
+        $(window).ready(function() {
+            $('.like-button').click(function() {
+                var guest_id = $(this).data('id');
+                $.get( "/like", { id: guest_id },
+                    function( data ) {
+                    $('#like-count-'+data.id).text(data.likes);
+                    }, 
+                'json');
+            });
+            
+            
+            $('#send').click(function() {
+                var message_text = $('#message').val();
+                $.post("/message", {message:message_text});
+            });
+        });
+    </script>    
+    
+    <script src="https://js.pusher.com/3.0/pusher.min.js"></script>
+      <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.log = function(message) {
+          if (window.console && window.console.log) {
+            window.console.log(message);
+          }
+        };
+    
+        var pusher = new Pusher('dc29313df95b3b98c80b', {
+          encrypted: true
+        });
+        var channel = pusher.subscribe('chats');
+        channel.bind('new_message', function(data) {
+            // //var $messages = $('#messages');
+            // var $row = $('div');
+            // $row.addClass('row').text(data.message);
+            $('#messages').append('<div class="row">'+data.message+'</div>');
+        });
+      </script>
+    </body>
+    
+    
+</html>

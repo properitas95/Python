@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>방명록</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+        
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+        <div class="container">
+            <div class="row">
+                <h3>방명록 수정하기</h3>
+                <a href="/logout" class='pull-right'>로그아웃</a>
+            </div>
+            <hr/>
+            <form class="form-horizontal" action='/guest/update' method='post'>
+                    <input type="hidden" name="book_id" value="{{ book.id }}">
+                    <input type="hidden" name="author_id" value="{{ g.user.id }}">
+                    <div class="form-group">
+                        <input type="text" name="guest_name" class="form-control" value="{{ g.user.name }}" readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="contents" class="form-control" rows="3">{{ book.contents }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="form-control btn btn-primary">수정</button>
+                    </div>
+            </form>
+        </div>
+    </body>
+</html>
